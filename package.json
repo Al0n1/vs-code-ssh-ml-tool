@@ -1,0 +1,118 @@
+{
+    "name": "ssh-ml-tool",
+    "displayName": "SSH ML Tool",
+    "description": "SSH подключения для LM агентов через Language Model Tools API",
+    "version": "0.1.0",
+    "publisher": "your-publisher-name",
+    "engines": {
+        "vscode": "^1.85.0"
+    },
+    "categories": [
+        "AI",
+        "Other"
+    ],
+    "keywords": [
+        "ssh",
+        "ai",
+        "language-model",
+        "tools",
+        "remote"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "languageModelTools": [
+            {
+                "name": "ssh_connect",
+                "displayName": "SSH Connect",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "ssh-connect",
+                "icon": "$(plug)",
+                "userDescription": "Подключение к удаленному серверу через SSH",
+                "modelDescription": "Устанавливает SSH подключение к удаленному серверу. Используй этот инструмент когда нужно подключиться к удаленной машине для выполнения команд. Конфигурации подключений находятся в YAML файлах в папке secrets/.ssh/ проекта. После успешного подключения используй ssh_execute для выполнения команд на удаленном сервере. Важно: сначала подключись с помощью ssh_connect, затем выполняй команды через ssh_execute.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "connectionName": {
+                            "type": "string",
+                            "description": "Имя подключения из YAML конфигурации (поле 'name'). Например: 'production-server' или 'dev-machine'. Это имя должно точно соответствовать полю 'name' в одном из YAML файлов в папке secrets/.ssh/"
+                        }
+                    },
+                    "required": [
+                        "connectionName"
+                    ]
+                }
+            },
+            {
+                "name": "ssh_execute",
+                "displayName": "SSH Execute Command",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "ssh-execute",
+                "icon": "$(terminal)",
+                "userDescription": "Выполнение команды на удаленном сервере через SSH",
+                "modelDescription": "Выполняет команду на удаленном сервере через установленное SSH подключение. Используй этот инструмент для запуска команд на удаленной машине. Важно: перед использованием этого инструмента необходимо сначала установить подключение с помощью ssh_connect. Команда будет выполнена в shell окружении удаленного сервера. Возвращает stdout и stderr выполненной команды. Для выполнения нескольких команд используй этот инструмент несколько раз последовательно.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "connectionName": {
+                            "type": "string",
+                            "description": "Имя активного подключения, на котором нужно выполнить команду. Должно совпадать с именем, использованным в ssh_connect."
+                        },
+                        "command": {
+                            "type": "string",
+                            "description": "Команда для выполнения на удаленном сервере. Например: 'ls -la', 'cd /var/www && git pull', 'docker ps', 'systemctl status nginx'. Команда выполняется в bash shell."
+                        }
+                    },
+                    "required": [
+                        "connectionName",
+                        "command"
+                    ]
+                }
+            },
+            {
+                "name": "ssh_disconnect",
+                "displayName": "SSH Disconnect",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "ssh-disconnect",
+                "icon": "$(debug-disconnect)",
+                "userDescription": "Отключение от удаленного сервера",
+                "modelDescription": "Завершает SSH подключение к удаленному серверу и освобождает ресурсы. Используй этот инструмент когда работа с удаленным сервером завершена. Рекомендуется всегда отключаться после завершения задач на удаленном сервере. После отключения для повторного выполнения команд потребуется снова использовать ssh_connect.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "connectionName": {
+                            "type": "string",
+                            "description": "Имя активного подключения, которое нужно закрыть. Должно совпадать с именем, использованным в ssh_connect."
+                        }
+                    },
+                    "required": [
+                        "connectionName"
+                    ]
+                }
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile",
+        "lint": "eslint src --ext ts"
+    },
+    "dependencies": {
+        "ssh2": "^1.15.0",
+        "js-yaml": "^4.1.0"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.85.0",
+        "@types/node": "^20.10.0",
+        "@types/js-yaml": "^4.0.9",
+        "@types/ssh2": "^1.15.0",
+        "typescript": "^5.3.3",
+        "@typescript-eslint/eslint-plugin": "^6.13.0",
+        "@typescript-eslint/parser": "^6.13.0",
+        "eslint": "^8.54.0"
+    }
+}
