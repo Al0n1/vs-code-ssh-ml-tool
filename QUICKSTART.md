@@ -1,5 +1,13 @@
 # Быстрый старт: SSH ML Tool
 
+## ⚠️ Требования
+
+- **VS Code 1.95.0 или новее** (для Language Model Tools API)
+- Node.js 16+
+- SSH доступ к удаленным серверам
+
+Проверьте версию VS Code: `Help > About` или `code --version`
+
 ## 🚀 Запуск расширения
 
 ### 1. Установка и компиляция (уже выполнено)
@@ -43,17 +51,37 @@ connections:
 
 ### 4. Использование с LM агентом
 
-В VS Code откройте Copilot Chat и попробуйте:
+#### Способ 1: Явное указание инструментов (рекомендуется)
+
+В VS Code откройте Copilot Chat и используйте инструменты напрямую:
 
 ```
-@workspace Подключись к test-server через SSH и выполни команду "whoami"
+#ssh_connect с connectionName "test-server"
 ```
 
-Расширение автоматически предоставит три инструмента:
+```
+#ssh_execute с connectionName "test-server" и command "whoami"
+```
 
-- `#ssh-connect` - для подключения
-- `#ssh-execute` - для выполнения команд
-- `#ssh-disconnect` - для отключения
+```
+#ssh_disconnect с connectionName "test-server"
+```
+
+#### Способ 2: Естественный язык с упоминанием инструментов
+
+```
+Используй #ssh_connect для подключения к test-server, затем выполни команду whoami
+```
+
+#### Способ 3: Через контекстное меню
+
+1. Откройте Copilot Chat
+2. Нажмите кнопку "+" (Attach context)
+3. Выберите "Tools" в выпадающем меню
+4. Выберите нужные SSH инструменты
+5. Задайте вопрос естественным языком
+
+**Важно**: Инструменты называются `ssh_connect`, `ssh_execute` и `ssh_disconnect` (с подчеркиванием, а не дефисом)
 
 ## 📦 Сборка .vsix пакета для установки
 
@@ -99,41 +127,42 @@ SSH ML Tool: All tools registered successfully
    - Укажите `privateKeyPath` в конфигурации ИЛИ
    - Добавьте `passwordRef` для ввода пароля
 
-## 🧪 Тестирование инструментов
+## 🧪 Тестирование
 
-### Тест 1: Подключение
+### Способ 1: Через команды VS Code (прямое тестирование)
 
-```
-LM Agent: используй ssh_connect с параметром:
-{
-  "connectionName": "test-server"
-}
-```
+1. Нажмите `Ctrl+Shift+P` (Command Palette)
+2. Выберите `SSH ML Tool: Test Connection`
+3. Выберите сервер из списка
+4. Для выполнения команд: `SSH ML Tool: Execute Command`
 
-Ожидаемый результат: Успешное подключение
+**Это самый надежный способ проверить, что расширение работает!**
 
-### Тест 2: Выполнение команды
+### Способ 2: Через Copilot Chat (требует VS Code 1.95.0+)
 
-```
-LM Agent: используй ssh_execute с параметрами:
-{
-  "connectionName": "test-server",
-  "command": "echo 'Hello from SSH!'"
-}
+#### Тест 1: Подключение
+
+```text
+#ssh_connect {"connectionName": "test-server"}
 ```
 
-Ожидаемый результат: Вывод команды в ответе
+#### Тест 2: Выполнение команды
 
-### Тест 3: Отключение
-
-```
-LM Agent: используй ssh_disconnect с параметром:
-{
-  "connectionName": "test-server"
-}
+```text
+#ssh_execute {"connectionName": "test-server", "command": "whoami"}
 ```
 
-Ожидаемый результат: Подтверждение отключения
+#### Тест 3: Отключение
+
+```text
+#ssh_disconnect {"connectionName": "test-server"}
+```
+
+### Способ 3: Естественный язык с явным указанием инструментов
+
+```text
+Используй #ssh_connect для подключения к test-server, затем #ssh_execute чтобы выполнить команду "ls -la"
+```
 
 ## 📊 Структура проекта
 

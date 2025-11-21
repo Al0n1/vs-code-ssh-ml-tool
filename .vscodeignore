@@ -9,4 +9,9 @@ vsc-extension-quickstart.md
 **/.eslintrc.json
 **/*.map
 **/*.ts
-node_modules/
+# Включаем только production зависимости
+node_modules/**/test/**
+node_modules/**/tests/**
+node_modules/**/*.d.ts
+node_modules/**/*.md
+node_modules/.bin/**

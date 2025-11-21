@@ -5,7 +5,7 @@
     "version": "0.1.0",
     "publisher": "your-publisher-name",
     "engines": {
-        "vscode": "^1.85.0"
+        "vscode": "^1.95.0"
     },
     "categories": [
         "AI",
@@ -23,12 +23,35 @@
     ],
     "main": "./out/extension.js",
     "contributes": {
+        "commands": [
+            {
+                "command": "ssh-ml-tool.testConnection",
+                "title": "SSH ML Tool: Test Connection",
+                "category": "SSH ML Tool"
+            },
+            {
+                "command": "ssh-ml-tool.executeCommand",
+                "title": "SSH ML Tool: Execute Command",
+                "category": "SSH ML Tool"
+            },
+            {
+                "command": "ssh-ml-tool.disconnect",
+                "title": "SSH ML Tool: Disconnect",
+                "category": "SSH ML Tool"
+            }
+        ],
         "languageModelTools": [
             {
                 "name": "ssh_connect",
                 "displayName": "SSH Connect",
                 "canBeReferencedInPrompt": true,
-                "toolReferenceName": "ssh-connect",
+                "toolReferenceName": "ssh_connect",
+                "tags": [
+                    "ssh",
+                    "remote",
+                    "connection",
+                    "server"
+                ],
                 "icon": "$(plug)",
                 "userDescription": "Подключение к удаленному серверу через SSH",
                 "modelDescription": "Устанавливает SSH подключение к удаленному серверу. Используй этот инструмент когда нужно подключиться к удаленной машине для выполнения команд. Конфигурации подключений находятся в YAML файлах в папке secrets/.ssh/ проекта. После успешного подключения используй ssh_execute для выполнения команд на удаленном сервере. Важно: сначала подключись с помощью ssh_connect, затем выполняй команды через ssh_execute.",
@@ -49,7 +72,14 @@
                 "name": "ssh_execute",
                 "displayName": "SSH Execute Command",
                 "canBeReferencedInPrompt": true,
-                "toolReferenceName": "ssh-execute",
+                "toolReferenceName": "ssh_execute",
+                "tags": [
+                    "ssh",
+                    "command",
+                    "execute",
+                    "remote",
+                    "terminal"
+                ],
                 "icon": "$(terminal)",
                 "userDescription": "Выполнение команды на удаленном сервере через SSH",
                 "modelDescription": "Выполняет команду на удаленном сервере через установленное SSH подключение. Используй этот инструмент для запуска команд на удаленной машине. Важно: перед использованием этого инструмента необходимо сначала установить подключение с помощью ssh_connect. Команда будет выполнена в shell окружении удаленного сервера. Возвращает stdout и stderr выполненной команды. Для выполнения нескольких команд используй этот инструмент несколько раз последовательно.",
@@ -75,7 +105,12 @@
                 "name": "ssh_disconnect",
                 "displayName": "SSH Disconnect",
                 "canBeReferencedInPrompt": true,
-                "toolReferenceName": "ssh-disconnect",
+                "toolReferenceName": "ssh_disconnect",
+                "tags": [
+                    "ssh",
+                    "disconnect",
+                    "close"
+                ],
                 "icon": "$(debug-disconnect)",
                 "userDescription": "Отключение от удаленного сервера",
                 "modelDescription": "Завершает SSH подключение к удаленному серверу и освобождает ресурсы. Используй этот инструмент когда работа с удаленным сервером завершена. Рекомендуется всегда отключаться после завершения задач на удаленном сервере. После отключения для повторного выполнения команд потребуется снова использовать ssh_connect.",
@@ -106,7 +141,7 @@
         "js-yaml": "^4.1.0"
     },
     "devDependencies": {
-        "@types/vscode": "^1.85.0",
+        "@types/vscode": "^1.95.0",
         "@types/node": "^20.10.0",
         "@types/js-yaml": "^4.0.9",
         "@types/ssh2": "^1.15.0",
